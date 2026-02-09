@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Input.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">AiSD2025ZEx5</a> &gt; <a href="index.source.html" class="el_package">pl.edu.pw.ee</a> &gt; <span class="el_source">Input.java</span></div><h1>Input.java</h1><pre class="source lang-java linenums">package pl.edu.pw.ee;
+
+import pl.edu.pw.ee.Structs.ProgramMode;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
+
+<span class="fc" id="L11">public class Input {</span>
+    private ProgramMode mode;
+    private String inputPath;
+    private String outputPath;
+    private int maxChainLength;
+
+    public void read(String[] input){
+<span class="fc bfc" id="L18" title="All 2 branches covered.">        if(input == null)</span>
+<span class="fc" id="L19">            throw new NullPointerException(&quot;Input is null&quot;);</span>
+<span class="fc" id="L20">        List&lt;String&gt; args = Arrays.asList(input);</span>
+// --- MODE ---
+<span class="fc" id="L22">        int mIndex = args.indexOf(&quot;-m&quot;);</span>
+<span class="fc bfc" id="L23" title="All 4 branches covered.">        if (mIndex != -1 &amp;&amp; mIndex + 1 &lt; args.size()) {</span>
+<span class="fc" id="L24">            mode = Arrays.stream(ProgramMode.values())</span>
+<span class="fc" id="L25">                    .filter(m -&gt; m.name().equalsIgnoreCase(args.get(mIndex + 1)))</span>
+<span class="fc" id="L26">                    .findFirst()</span>
+<span class="fc" id="L27">                    .orElse(null);</span>
+        }
+
+// --- SOURCE PATH ---
+<span class="fc" id="L31">        int sIndex = args.indexOf(&quot;-s&quot;);</span>
+<span class="fc bfc" id="L32" title="All 4 branches covered.">        if (sIndex != -1 &amp;&amp; sIndex + 1 &lt; args.size()) {</span>
+<span class="fc" id="L33">            inputPath = args.get(sIndex + 1);</span>
+        }
+
+// --- DESTINATION PATH ---
+<span class="fc" id="L37">        int dIndex = args.indexOf(&quot;-d&quot;);</span>
+<span class="fc bfc" id="L38" title="All 4 branches covered.">        if (dIndex != -1 &amp;&amp; dIndex + 1 &lt; args.size()) {</span>
+<span class="fc" id="L39">            outputPath = args.get(dIndex + 1);</span>
+        }
+
+// --- MAX CHAIN LENGTH ---
+<span class="fc" id="L43">        int lIndex = args.indexOf(&quot;-l&quot;);</span>
+<span class="fc bfc" id="L44" title="All 4 branches covered.">        if (lIndex != -1 &amp;&amp; lIndex + 1 &lt; args.size()) {</span>
+<span class="fc" id="L45">            maxChainLength = Integer.parseInt(args.get(lIndex + 1));</span>
+        }
+<span class="fc" id="L47">    }</span>
+
+    public void validateInputs(){
+
+<span class="fc bfc" id="L51" title="All 2 branches covered.">        if(mode == null)</span>
+<span class="fc" id="L52">            throw(new RuntimeException(&quot;mode can't be null!&quot;));</span>
+<span class="fc" id="L53">        System.out.println(&quot;mode is correct&quot;);</span>
+
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        if(!checkIfInputFileExists())</span>
+<span class="fc" id="L56">            throw(new RuntimeException(&quot;Input file doesn't exists!&quot;));</span>
+<span class="fc" id="L57">        System.out.println(&quot;Input path is correct&quot;);</span>
+
+<span class="fc" id="L59">        boolean outputPathStatus = checkIfOutputFileExists();</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        if(!outputPathStatus) {</span>
+<span class="fc" id="L61">            outputPath = &quot;Project Path&quot;;</span>
+<span class="fc" id="L62">            System.out.println(&quot;Output path has not been found!&quot;);</span>
+<span class="fc" id="L63">            String projectPath = System.getProperty(&quot;user.dir&quot;);</span>
+<span class="fc" id="L64">            outputPath = projectPath;</span>
+<span class="fc" id="L65">            System.out.println(&quot;Output path has been set to &quot; + projectPath);</span>
+<span class="fc" id="L66">        }</span>
+        else {
+<span class="fc" id="L68">            System.out.println(&quot;Output path is correct&quot;);</span>
+        }
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        if(maxChainLength &lt;= 0)</span>
+        {
+<span class="fc" id="L72">            maxChainLength = 1;</span>
+        }
+<span class="fc" id="L74">    }</span>
+
+    private boolean checkIfInputFileExists() {
+<span class="fc" id="L77">        return Files.exists(Paths.get(inputPath));</span>
+    }
+
+    private boolean checkIfOutputFileExists() {
+<span class="pc bpc" id="L81" title="1 of 2 branches missed.">        if(getOutputPath() == null)</span>
+<span class="nc" id="L82">            return false;</span>
+<span class="fc" id="L83">        Path testPath = Paths.get(getOutputPath());</span>
+<span class="fc" id="L84">        return Files.exists(testPath);</span>
+    }
+
+
+    public ProgramMode getMode() {
+<span class="fc" id="L89">        return mode;</span>
+    }
+
+    public String getInputPath() {
+<span class="fc" id="L93">        return inputPath;</span>
+    }
+
+    public String getOutputPath() {
+<span class="fc" id="L97">        return outputPath;</span>
+    }
+
+    public int getMaxChainLength() {
+<span class="fc" id="L101">        return maxChainLength;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

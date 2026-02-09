@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FileManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">AiSD2025ZEx5</a> &gt; <a href="index.source.html" class="el_package">pl.edu.pw.ee.Algorithms</a> &gt; <span class="el_source">FileManager.java</span></div><h1>FileManager.java</h1><pre class="source lang-java linenums">package pl.edu.pw.ee.Algorithms;
+
+import pl.edu.pw.ee.Structs.ProgramMode;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+<span class="fc" id="L11">public class FileManager {</span>
+
+    public byte[] readBytesFile(String inputPath) {
+        try {
+<span class="fc" id="L15">            return Files.readAllBytes(Paths.get(inputPath));</span>
+<span class="nc" id="L16">        } catch (IOException e) {</span>
+<span class="nc" id="L17">            throw new RuntimeException(&quot;Failed to read file: &quot; + inputPath, e);</span>
+        }
+    }
+
+    public void writeBytesFile(String inputPathStr, byte[] data, String outputPath, ProgramMode mode) {
+<span class="fc" id="L22">        Path input = Paths.get(inputPathStr);</span>
+
+        try {
+<span class="fc" id="L25">            Path path = Paths.get(outputPath);</span>
+
+<span class="pc bpc" id="L27" title="2 of 4 branches missed.">            if (Files.exists(path) &amp;&amp; Files.isDirectory(path)) {</span>
+<span class="fc" id="L28">                String inputFileName = input.getFileName().toString();</span>
+
+<span class="pc bpc" id="L30" title="1 of 4 branches missed.">                if (mode == ProgramMode.decomp &amp;&amp; inputFileName.endsWith(&quot;.comp&quot;)) {</span>
+<span class="fc" id="L31">                    inputFileName = inputFileName.substring(0, inputFileName.length() - &quot;.comp&quot;.length());</span>
+                }
+
+<span class="fc bfc" id="L34" title="All 2 branches covered.">                String modeSuffix = (mode == ProgramMode.comp) ? &quot;comp&quot; : &quot;decomp&quot;;</span>
+<span class="fc" id="L35">                String outputFileName = inputFileName + &quot;.&quot; + modeSuffix;</span>
+<span class="fc" id="L36">                path = path.resolve(outputFileName);</span>
+            }
+
+<span class="pc bpc" id="L39" title="1 of 2 branches missed.">            if (path.getParent() != null) Files.createDirectories(path.getParent());</span>
+
+<span class="fc" id="L41">            Files.write(path, data);</span>
+
+<span class="nc" id="L43">        } catch (IOException e) {</span>
+<span class="nc" id="L44">            throw new RuntimeException(&quot;Failed to write file: &quot; + outputPath, e);</span>
+<span class="fc" id="L45">        }</span>
+<span class="fc" id="L46">    }</span>
+
+    public void writeCompressedFile(
+            String inputPathStr,
+            byte[] serializedTree,
+            byte[] compressedData,
+            String outputPath
+    ) {
+        // 4 bytes for tree length
+<span class="fc" id="L55">        int treeLength = serializedTree.length;</span>
+
+<span class="fc" id="L57">        byte[] finalBytes = new byte[4 + treeLength + compressedData.length];</span>
+
+        // write tree length (big-endian)
+<span class="fc" id="L60">        finalBytes[0] = (byte) (treeLength &gt;&gt;&gt; 24);</span>
+<span class="fc" id="L61">        finalBytes[1] = (byte) (treeLength &gt;&gt;&gt; 16);</span>
+<span class="fc" id="L62">        finalBytes[2] = (byte) (treeLength &gt;&gt;&gt; 8);</span>
+<span class="fc" id="L63">        finalBytes[3] = (byte) (treeLength);</span>
+
+        // write tree bytes
+<span class="fc" id="L66">        System.arraycopy(serializedTree, 0, finalBytes, 4, treeLength);</span>
+
+        // write compressed data
+<span class="fc" id="L69">        System.arraycopy(compressedData, 0, finalBytes, 4 + treeLength, compressedData.length);</span>
+
+<span class="fc" id="L71">        writeBytesFile(inputPathStr, finalBytes, outputPath, ProgramMode.comp);</span>
+<span class="fc" id="L72">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

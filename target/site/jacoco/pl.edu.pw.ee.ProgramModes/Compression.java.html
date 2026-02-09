@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Compression.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">AiSD2025ZEx5</a> &gt; <a href="index.source.html" class="el_package">pl.edu.pw.ee.ProgramModes</a> &gt; <span class="el_source">Compression.java</span></div><h1>Compression.java</h1><pre class="source lang-java linenums">package pl.edu.pw.ee.ProgramModes;
+
+import pl.edu.pw.ee.Structs.ChainAndCode;
+import java.io.ByteArrayOutputStream;
+import java.util.List;
+
+<span class="fc" id="L7">public class Compression {</span>
+
+    private ChainAndCode findLongestMatch(byte[] data, int index, List&lt;ChainAndCode&gt; codedChains) {
+<span class="fc" id="L10">        ChainAndCode best = null;</span>
+
+<span class="fc bfc" id="L12" title="All 2 branches covered.">        for (ChainAndCode chain : codedChains) {</span>
+<span class="fc" id="L13">            byte[] symbol = chain.symbol;</span>
+
+<span class="fc bfc" id="L15" title="All 2 branches covered.">            if (matchesAt(data, index, symbol)) {</span>
+<span class="fc bfc" id="L16" title="All 4 branches covered.">                if (best == null || symbol.length &gt; best.symbol.length) {</span>
+<span class="fc" id="L17">                    best = chain;</span>
+                }
+            }
+<span class="fc" id="L20">        }</span>
+<span class="fc" id="L21">        return best;</span>
+    }
+
+    private boolean matchesAt(byte[] data, int index, byte[] symbol) {
+<span class="fc bfc" id="L25" title="All 2 branches covered.">        if (index + symbol.length &gt; data.length) return false;</span>
+
+<span class="fc bfc" id="L27" title="All 2 branches covered.">        for (int i = 0; i &lt; symbol.length; i++) {</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">            if (data[index + i] != symbol[i]) return false;</span>
+        }
+<span class="fc" id="L30">        return true;</span>
+    }
+
+    /**
+     * Compress input and return packed bytes with 3-bit padding header
+     */
+    public byte[] compressToBytes(byte[] data, List&lt;ChainAndCode&gt; codedChains) {
+<span class="fc" id="L37">        StringBuilder bits = new StringBuilder();</span>
+<span class="fc" id="L38">        int i = 0;</span>
+
+        // 1. Build Huffman bit string
+<span class="fc bfc" id="L41" title="All 2 branches covered.">        while (i &lt; data.length) {</span>
+<span class="fc" id="L42">            ChainAndCode match = findLongestMatch(data, i, codedChains);</span>
+
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">            if (match == null) {</span>
+<span class="nc" id="L45">                throw new IllegalStateException(</span>
+                        &quot;No Huffman code for byte at position &quot; + i
+                );
+            }
+
+<span class="fc" id="L50">            bits.append(match.code);</span>
+<span class="fc" id="L51">            i += match.symbol.length;</span>
+<span class="fc" id="L52">        }</span>
+
+        // 2. Insert 3-bit placeholder for header at start
+<span class="fc" id="L55">        bits.insert(0, &quot;000&quot;); // placeholder for padding count</span>
+
+        // 3. Compute extra padding bits AFTER adding header
+<span class="fc" id="L58">        int totalBits = bits.length();</span>
+<span class="fc" id="L59">        int extraBits = (8 - (totalBits % 8)) % 8; // 0-7 padding bits</span>
+
+        // 4. Replace placeholder with actual 3-bit header
+<span class="fc" id="L62">        String header = String.format(&quot;%3s&quot;, Integer.toBinaryString(extraBits)).replace(' ', '0');</span>
+<span class="fc" id="L63">        bits.replace(0, 3, header);</span>
+
+        // 5. Pack bits into bytes
+<span class="fc" id="L66">        ByteArrayOutputStream out = new ByteArrayOutputStream();</span>
+<span class="fc" id="L67">        int currentByte = 0;</span>
+<span class="fc" id="L68">        int bitsFilled = 0;</span>
+
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        for (int k = 0; k &lt; bits.length(); k++) {</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">            currentByte = (currentByte &lt;&lt; 1) | (bits.charAt(k) == '1' ? 1 : 0);</span>
+<span class="fc" id="L72">            bitsFilled++;</span>
+
+<span class="fc bfc" id="L74" title="All 2 branches covered.">            if (bitsFilled == 8) {</span>
+<span class="fc" id="L75">                out.write(currentByte);</span>
+<span class="fc" id="L76">                currentByte = 0;</span>
+<span class="fc" id="L77">                bitsFilled = 0;</span>
+            }
+        }
+
+        // 6. Pad last byte with zeros if necessary
+<span class="fc bfc" id="L82" title="All 2 branches covered.">        if (bitsFilled &gt; 0) {</span>
+<span class="fc" id="L83">            currentByte &lt;&lt;= (8 - bitsFilled);</span>
+<span class="fc" id="L84">            out.write(currentByte);</span>
+        }
+
+<span class="fc" id="L87">        return out.toByteArray();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Decompression.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">AiSD2025ZEx5</a> &gt; <a href="index.source.html" class="el_package">pl.edu.pw.ee.ProgramModes</a> &gt; <span class="el_source">Decompression.java</span></div><h1>Decompression.java</h1><pre class="source lang-java linenums">package pl.edu.pw.ee.ProgramModes;
+
+import java.io.ByteArrayOutputStream;
+
+<span class="fc" id="L5">public class Decompression {</span>
+
+    private static class Node {
+        Node left, right;
+        byte[] value;  // null for internal nodes
+<span class="fc bfc" id="L10" title="All 2 branches covered.">        boolean isLeaf() { return value != null; }</span>
+    }
+
+    /**
+     * Decompresses a file written with `writeCompressedFile`:
+     * - first 4 bytes = tree length (big-endian)
+     * - next treeLength bytes = serialized Huffman tree
+     * - rest = compressed bitstream
+     */
+    public byte[] decompressFile(byte[] fileContent) {
+<span class="pc bpc" id="L20" title="1 of 2 branches missed.">        if (fileContent.length &lt; 4) throw new IllegalArgumentException(&quot;File too short&quot;);</span>
+
+        // 1. Read tree length (first 4 bytes, big-endian)
+<span class="fc" id="L23">        int treeLength = ((fileContent[0] &amp; 0xFF) &lt;&lt; 24) |</span>
+                ((fileContent[1] &amp; 0xFF) &lt;&lt; 16) |
+                ((fileContent[2] &amp; 0xFF) &lt;&lt; 8) |
+                (fileContent[3] &amp; 0xFF);
+
+<span class="pc bpc" id="L28" title="1 of 2 branches missed.">        if (fileContent.length &lt; 4 + treeLength)</span>
+<span class="nc" id="L29">            throw new IllegalArgumentException(&quot;Invalid file: tree length exceeds file size&quot;);</span>
+
+        // 2. Extract tree bytes
+<span class="fc" id="L32">        byte[] treeBytes = new byte[treeLength];</span>
+<span class="fc" id="L33">        System.arraycopy(fileContent, 4, treeBytes, 0, treeLength);</span>
+
+        // 3. Extract compressed data
+<span class="fc" id="L36">        byte[] compressedData = new byte[fileContent.length - 4 - treeLength];</span>
+<span class="fc" id="L37">        System.arraycopy(fileContent, 4 + treeLength, compressedData, 0, compressedData.length);</span>
+
+        // 4. Reconstruct Huffman tree
+<span class="fc" id="L40">        int[] idx = {0};</span>
+<span class="fc" id="L41">        Node root = readTree(treeBytes, idx);</span>
+
+        // 5. Decode compressed data
+<span class="fc" id="L44">        return decodeData(compressedData, root);</span>
+    }
+
+    // Deserialize tree from serialized bytes
+    private Node readTree(byte[] bytes, int[] idx) {
+<span class="pc bpc" id="L49" title="1 of 2 branches missed.">        if (idx[0] &gt;= bytes.length) throw new IllegalStateException(&quot;Unexpected end of tree bytes&quot;);</span>
+
+<span class="fc" id="L51">        byte marker = bytes[idx[0]++];</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">        if (marker == 1) { // leaf node</span>
+<span class="fc" id="L53">            int len = bytes[idx[0]++] &amp; 0xFF;</span>
+<span class="fc" id="L54">            byte[] val = new byte[len];</span>
+<span class="fc" id="L55">            System.arraycopy(bytes, idx[0], val, 0, len);</span>
+<span class="fc" id="L56">            idx[0] += len;</span>
+
+<span class="fc" id="L58">            Node leaf = new Node();</span>
+<span class="fc" id="L59">            leaf.value = val;</span>
+<span class="fc" id="L60">            return leaf;</span>
+<span class="pc bpc" id="L61" title="1 of 2 branches missed.">        } else if (marker == 0) { // internal node</span>
+<span class="fc" id="L62">            Node node = new Node();</span>
+<span class="fc" id="L63">            node.left = readTree(bytes, idx);</span>
+<span class="fc" id="L64">            node.right = readTree(bytes, idx);</span>
+<span class="fc" id="L65">            return node;</span>
+        } else {
+<span class="nc" id="L67">            throw new IllegalStateException(&quot;Invalid tree marker: &quot; + marker);</span>
+        }
+    }
+
+    // Decode bitstream using Huffman tree with 3-bit padding header
+    private byte[] decodeData(byte[] data, Node root) {
+<span class="pc bpc" id="L73" title="1 of 2 branches missed.">        if (data.length == 0) return new byte[0];</span>
+
+<span class="fc" id="L75">        ByteArrayOutputStream out = new ByteArrayOutputStream();</span>
+<span class="fc" id="L76">        Node current = root;</span>
+
+        // --- Read first 3 bits = number of extra padding bits ---
+<span class="fc" id="L79">        int extraBits = ((data[0] &gt;&gt; 5) &amp; 0b111);</span>
+
+<span class="fc" id="L81">        int totalBits = data.length * 8 - extraBits - 3; // subtract 3 header bits</span>
+<span class="fc" id="L82">        int bitPos = 0;</span>
+
+<span class="fc bfc" id="L84" title="All 2 branches covered.">        for (int byteIndex = 0; byteIndex &lt; data.length; byteIndex++) {</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">            for (int bit = 7; bit &gt;= 0; bit--) {</span>
+                // Skip the 3-bit header in the first byte
+<span class="fc bfc" id="L87" title="All 4 branches covered.">                if (byteIndex == 0 &amp;&amp; bit &gt;= 5) continue;</span>
+
+<span class="fc bfc" id="L89" title="All 2 branches covered.">                if (bitPos &gt;= totalBits) break;</span>
+
+<span class="fc" id="L91">                int b = (data[byteIndex] &gt;&gt; bit) &amp; 1;</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">                current = (b == 0) ? current.left : current.right;</span>
+
+<span class="fc bfc" id="L94" title="All 2 branches covered.">                if (current.isLeaf()) {</span>
+<span class="fc" id="L95">                    out.write(current.value, 0, current.value.length);</span>
+<span class="fc" id="L96">                    current = root;</span>
+                }
+
+<span class="fc" id="L99">                bitPos++;</span>
+            }
+        }
+
+<span class="fc" id="L103">        return out.toByteArray();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

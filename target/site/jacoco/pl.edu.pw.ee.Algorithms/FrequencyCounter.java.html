@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pl"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FrequencyCounter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">AiSD2025ZEx5</a> &gt; <a href="index.source.html" class="el_package">pl.edu.pw.ee.Algorithms</a> &gt; <span class="el_source">FrequencyCounter.java</span></div><h1>FrequencyCounter.java</h1><pre class="source lang-java linenums">package pl.edu.pw.ee.Algorithms;
+
+import pl.edu.pw.ee.Structs.Chain;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+<span class="fc" id="L9">public class FrequencyCounter {</span>
+
+    // Count actual frequencies of tokens
+    public List&lt;Chain&gt; countFrequencies(List&lt;byte[]&gt; tokens) {
+<span class="fc" id="L13">        List&lt;Chain&gt; freqChains = new ArrayList&lt;&gt;();</span>
+
+<span class="fc bfc" id="L15" title="All 2 branches covered.">        for (byte[] token : tokens) {</span>
+<span class="fc" id="L16">            boolean found = false;</span>
+
+<span class="fc bfc" id="L18" title="All 2 branches covered.">            for (Chain c : freqChains) {</span>
+<span class="fc bfc" id="L19" title="All 2 branches covered.">                if (Arrays.equals(c.bytes, token)) {</span>
+<span class="fc" id="L20">                    c.amount++;</span>
+<span class="fc" id="L21">                    found = true;</span>
+<span class="fc" id="L22">                    break;</span>
+                }
+<span class="fc" id="L24">            }</span>
+
+<span class="fc bfc" id="L26" title="All 2 branches covered.">            if (!found) {</span>
+<span class="fc" id="L27">                freqChains.add(new Chain(token, 1));</span>
+            }
+<span class="fc" id="L29">        }</span>
+
+<span class="fc" id="L31">        return freqChains;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -1,0 +1,17 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+AiSD2025ZEx5,pl.edu.pw.ee.Structs,HuffmanTree,0,213,0,20,0,43,0,18,0,8
+AiSD2025ZEx5,pl.edu.pw.ee.Structs,ProgramMode,0,15,0,0,0,2,0,1,0,1
+AiSD2025ZEx5,pl.edu.pw.ee.Structs,HuffmanTree.Node,0,28,0,0,0,10,0,2,0,2
+AiSD2025ZEx5,pl.edu.pw.ee.Structs,CompressedInput,9,0,0,0,4,0,1,0,1,0
+AiSD2025ZEx5,pl.edu.pw.ee.Structs,ChainAndCode,0,9,0,0,0,4,0,1,0,1
+AiSD2025ZEx5,pl.edu.pw.ee.Structs,Chain,6,9,0,0,1,4,1,1,1,1
+AiSD2025ZEx5,pl.edu.pw.ee.debug,CompressedFileDebugger,295,0,16,0,48,0,14,0,6,0
+AiSD2025ZEx5,pl.edu.pw.ee.ProgramModes,Decompression,24,251,5,21,2,43,5,12,0,4
+AiSD2025ZEx5,pl.edu.pw.ee.ProgramModes,Compression,6,186,1,25,1,40,1,16,0,4
+AiSD2025ZEx5,pl.edu.pw.ee.ProgramModes,Decompression.Node,0,7,0,2,0,1,0,2,0,1
+AiSD2025ZEx5,pl.edu.pw.ee.Algorithms,Tokenizer,6,88,2,16,1,20,2,10,0,3
+AiSD2025ZEx5,pl.edu.pw.ee.Algorithms,FileManager,16,140,4,8,4,25,4,6,0,4
+AiSD2025ZEx5,pl.edu.pw.ee.Algorithms,ChainsFinder,1,221,2,34,0,44,2,24,0,8
+AiSD2025ZEx5,pl.edu.pw.ee.Algorithms,FrequencyCounter,0,57,0,8,0,14,0,6,0,2
+AiSD2025ZEx5,pl.edu.pw.ee,Input,2,202,1,27,1,46,1,23,0,10
+AiSD2025ZEx5,pl.edu.pw.ee,Main,15,114,2,3,2,31,3,2,1,1
