@@ -14,6 +14,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -35,7 +36,9 @@ class MainIntegrationTest {
         List<String> summary = new ArrayList<>();
 
         try (Stream<Path> files = Files.list(resourcesPath)) {
-            for (Path resourceFile : files.filter(Files::isRegularFile).toList()) {
+            for (Path resourceFile : files
+                    .filter(Files::isRegularFile)
+                    .collect(Collectors.toList())) {
                 System.out.println("Processing: " + resourceFile.getFileName());
 
                 try {

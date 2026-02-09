@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.file.*;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,7 +27,9 @@ class CompressionBenchmarkTest {
             boolean allCorrect = true;
 
             try (Stream<Path> files = Files.list(resourcesPath)) {
-                for (Path resourceFile : files.filter(Files::isRegularFile).toList()) {
+                for (Path resourceFile : files
+                        .filter(Files::isRegularFile)
+                        .collect(Collectors.toList())) {
 
                     Path tempDir = Files.createTempDirectory("bench");
                     Path inputCopy = tempDir.resolve(resourceFile.getFileName());
