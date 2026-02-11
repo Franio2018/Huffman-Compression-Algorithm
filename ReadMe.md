@@ -1,62 +1,29 @@
-Huffman Compression Algorithm
+Algorytm do kompresi huffmana jest uruchamiany komendą tak jak poniżej
+z poziomu folderu AiSD2025Ex5
 
-Projekt implementuje klasyczny algorytm kompresji Huffmana. Program jest narzędziem konsolowym (CLI) napisanym w Javie, pozwalającym na wydajną kompresję danych z wykorzystaniem drzewa Huffmana.
-Uruchamianie
+java -jar .\target\AiSD2025ZEx5-1.0-SNAPSHOT.jar 
+-m <comp/decomp> 
+-s <ścierzka do pliku którego chcemy skopresować> 
+-d <ścirzka do miejsca w którym checmy mieć plik wyjściowy> 
+-l <max długość łańcucha>
 
-Algorytm należy uruchomić z poziomu folderu AiSD2025Ex5 przy użyciu następującego polecenia:
-Bash
+program jest odporny na nie podanie flagi -d i -l, które to jest wstanie obsłużyć automatycznie.
+Podczas braku falgi -d algorytm przypisuje jako folder wyjściowy folder projektu. 
+Kiedy urzytkownik poda błędną flagę -l, bądź jej nie poda wcale, algorytm przypiszę jej wartość 1.
+W systuacji kiedy użytkownik nie poda -s, bądź zostawi -s "puste" program wypisze błąd na konsole,
+podając powód dla którego przerwał swoje działanie.
 
-java -jar .\target\AiSD2025ZEx5-1.0-SNAPSHOT.jar -m -s <ścieżka_do_pliku_wejściowego> -d <ścieżka_do_folderu_wyjściowego> -l <długość_łańcucha>
+Program jest wstanie obsługiwać pliki: zip, mp4, mp3, jpg, txt i może inne - tylko na tych był testowany. 
 
-Flagi i parametry
-Flaga	Status	Opis
--s	Wymagana	Ścieżka do pliku, który ma zostać skompresowany.
--m	Wymagana	Tryb pracy programu (mode).
--d	Opcjonalna	Ścieżka do folderu wyjściowego (domyślnie: folder projektu).
--l	Opcjonalna	Maksymalna długość łańcucha znaków (domyślnie: 1).
-Obsługa błędów i wartości domyślne
+Główną wadą algorytmu jest moment w którym tekst jest nie powtarzalny - dużo różnych łańcuchów, i kiedy teskst 
+jest bardzo krótki i różnorodny, a użytkownik my wybierzemy opcje z długim łańcuchem.
+Wtedy samo zapisanie drzewa Huffmana do dekodowania znacznie obciąża plik.
 
-Program został zaprojektowany tak, aby obsługiwać błędne lub brakujące dane wejściowe:
+Przykład: 
 
-    Brak flagi -d: Plik wynikowy zostanie zapisany w głównym katalogu projektu.
+plik txt z zawartością: ABCDEFABCDEF, długość maksymalna łańcucha 2, 
 
-    Brak/błędna flaga -l: Program automatycznie przyjmuje wartość 1.
+dłguość drzwa zakodowanego w bitach: 14
 
-    Brak flagi -s: Program przerwie działanie i wyświetli stosowny komunikat o błędzie w konsoli.
 
-Obsługiwane typy plików
-
-Program został przetestowany pod kątem skuteczności na następujących formatach:
-
-    Dokumenty: .txt
-
-    Obrazy: .jpg
-
-    Audio: .mp3
-
-    Wideo: .mp4
-
-    Archiwa: .zip
-
-Działanie na innych formatach jest możliwe, ale nie zostało oficjalnie zweryfikowane.
-Ograniczenia i charakterystyka algorytmu
-
-Należy pamiętać, że algorytm Huffmana nie zawsze doprowadzi do zmniejszenia rozmiaru pliku. Efektywność kompresji spada, gdy:
-
-    Niska powtarzalność: Tekst wejściowy zawiera bardzo dużo unikalnych łańcuchów.
-
-    Mały zbiór danych: Plik jest zbyt krótki, by zrównoważyć narzut drzewa.
-
-    Parametr -l: Wybranie zbyt dużej maksymalnej długości łańcucha przy różnorodnym tekście.
-
-    [!IMPORTANT] W powyższych przypadkach rozmiar drzewa Huffmana (niezbędnego do dekompresji) może przewyższyć zysk z samej kompresji danych.
-
-Przykład analizy rozmiaru
-
-Dla pliku tekstowego o zawartości ABCDEFABCDEF przy parametrze -l 2:
-
-    Długość drzewa: 14 bitów
-
-    Długość skompresowanego tekstu: 10 bitów
-
-    Wniosek: Narzut struktury drzewa ma kluczowe znaczenie dla finalnego rozmiaru pliku.
+długość kod z kompresowanego tekstu: 10 

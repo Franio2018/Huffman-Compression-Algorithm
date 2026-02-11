@@ -15,18 +15,18 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        //args = args.length == 0 ? "java -jar .\\target\\AiSD2025ZEx5-1.0-SNAPSHOT.jar -m comp -s C:\\Users\\Franek\\Downloads\\compOutput.comp -d lipa -l 4".split(" ") : args;
+        //args = args.length == 0 ? "java -jar .\\target\\AiSD2025ZEx5-1.0-SNAPSHOT.jar -m comp -s C:\\Users\\Franek\\Downloads\\compOutput.comp -d test -l 4".split(" ") : args;
 
-        args = args.length == 0 ? "java -jar .\\target\\AiSD2025ZEx5-1.0-SNAPSHOT.jar -m comp -s C:\\Users\\Franek\\Downloads\\test.txt -d C:\\Users\\Franek\\Downloads -l 2".split(" ") : args;
-        //args = args.length == 0 ? "java -jar .\\target\\AiSD2025ZEx5-1.0-SNAPSHOT.jar -m decomp -s C:\\Users\\Franek\\Downloads\\test.txt.comp -d lipa".split(" ") : args;
+        //args = args.length == 0 ? "java -jar .\\target\\AiSD2025ZEx5-1.0-SNAPSHOT.jar -m comp -s C:\\Users\\Franek\\Downloads\\test.txt -d C:\\Users\\Franek\\Downloads -l 2".split(" ") : args;
+        //args = args.length == 0 ? "java -jar .\\target\\AiSD2025ZEx5-1.0-SNAPSHOT.jar -m decomp -s C:\\Users\\Franek\\Downloads\\test.txt.comp -d test".split(" ") : args;
 
         //args = args.length == 0 ? "java -jar .\\target\\AiSD2025ZEx5-1.0-SNAPSHOT.jar -m comp -s C:\\Users\\Franek\\Downloads\\seaLion.jpg -d C:\\Users\\Franek\\Downloads".split(" ") : args;
-        //args = args.length == 0 ? "java -jar .\\target\\AiSD2025ZEx5-1.0-SNAPSHOT.jar -m decomp -s C:\\Users\\Franek\\Downloads\\seaLion.jpg.comp -d lipa".split(" ") : args;
+        //args = args.length == 0 ? "java -jar .\\target\\AiSD2025ZEx5-1.0-SNAPSHOT.jar -m decomp -s C:\\Users\\Franek\\Downloads\\seaLion.jpg.comp -d test".split(" ") : args;
 
         //args = args.length == 0 ? "java -jar .\\target\\AiSD2025ZEx5-1.0-SNAPSHOT.jar -m comp -s C:\\Users\\Franek\\Downloads\\Cr-20251023T215004Z-1-001\\1024.mp4 -d C:\\Users\\Franek\\Downloads".split(" ") : args;
-        //args = args.length == 0 ? "java -jar .\\target\\AiSD2025ZEx5-1.0-SNAPSHOT.jar -m decomp -s C:\\Users\\Franek\\Downloads\\seaLion.jpg.comp -d lipa".split(" ") : args;
+        //args = args.length == 0 ? "java -jar .\\target\\AiSD2025ZEx5-1.0-SNAPSHOT.jar -m decomp -s C:\\Users\\Franek\\Downloads\\seaLion.jpg.comp -d test".split(" ") : args;
 
-        //args = args.length == 0 ? "java -jar .\\target\\AiSD2025ZEx5-1.0-SNAPSHOT.jar -m comp -s C:\\Users\\Franek\\Downloads\\ZdIcEGwn.jpg -d lipa -l 10".split(" ") : args;
+        //args = args.length == 0 ? "java -jar .\\target\\AiSD2025ZEx5-1.0-SNAPSHOT.jar -m comp -s C:\\Users\\Franek\\Downloads\\ZdIcEGwn.jpg -d test -l 10".split(" ") : args;
         //args = args.length == 0 ? "java -jar .\\target\\AiSD2025ZEx5-1.0-SNAPSHOT.jar -m comp -s C:\\Users\\abc\\Downloads\\3S_xn1wH.jpg -d sciezka/do/innego/katalogu/niemanie_txt.comp -l 4".split(" ") : args;
 
         Input input = new Input();

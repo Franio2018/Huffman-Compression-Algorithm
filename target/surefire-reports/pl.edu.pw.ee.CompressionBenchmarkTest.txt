@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: pl.edu.pw.ee.CompressionBenchmarkTest
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 41.85 s -- in pl.edu.pw.ee.CompressionBenchmarkTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 32.35 s -- in pl.edu.pw.ee.CompressionBenchmarkTest
